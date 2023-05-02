@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
     <title> Kitchen UI </title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
     <header class="flex flex-col items-center gap-8 bg-orange-100 py-5">
@@ -47,7 +47,7 @@
                         {% endfor %}
                     </ul>
                     <p class="flex justify-end gap-3">
-                        <button id="getRecipe"  data-recipe={{recipe}} class="bg-orange-400 hover:bg-orange-500 rounded px-5 py-1.5"> Run </button>
+                        <button id="getRecipe"  data-rid={{recipe.id}} class="bg-orange-400 hover:bg-orange-500 rounded px-5 py-1.5"> Run </button>
                     </p>
                 </div>
             {% endfor %}
@@ -59,6 +59,7 @@
     <footer class="bg-gray-100 py-10 text-center">
         &copy;cookyourwish.com
     </footer>
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}" ></script>
     <script type="text/javascript" src="{% static 'js/index.js' %}" ></script>
 </body>
 </html>

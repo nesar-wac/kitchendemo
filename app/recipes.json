@@ -1,39 +1,122 @@
 [
-    {
-      "name": "Test One",
-      "steps": [
-        {
-          "step": 1, "action": "add", "pot": "saucepan",
-          "ingredients": [{"volume": 10, "unit": "g", "name": "butter"}]
-        },
-        {"step": 2, "action": "melt", "temperature": 40, "speed": 1, "duration": 30},
-        {
-            "step": 3, "action": "add",
-            "ingredients": [
-                {"volume": 50, "unit": "g", "ingredient": "rice"},
-                {"volume": 50, "unit": "ml", "ingredient": "water"},
-                {"volume": 80, "unit": "ml", "ingredient": "chicken stock"}]
-        },
-        {"step": 4, "action": "boil", "temperature": 80, "speed": 0, "duration": 300},
-        {
-            "step": 5, "action": "add",
-            "ingredients": [
-                {"volume": 11, "unit": "g", "name": "carrot"},
-                {"volume": 10, "unit": "g", "name": "peans"},
-                {"volume": 0.3, "unit": "g", "name": "salt"}]
-        },
-        {"step": 6, "action": "stir", "temperature": 40, "speed": 0, "duration": 30},
-        {"step": 7, "action": "cook", "temperature": 80, "speed": 1, "duration":  160}
-      ]
-    },
-    {
-      "name": "Test Two",
-      "steps": [
-        {
-          "step": 1, "action": "add", "pot": "saucepan",
-          "ingredients": [{"volume": 10, "unit": "g", "name": "butter"}]
-        },
-        {"step": 2, "action": "melt", "temperature": 40, "speed": 1, "duration": 30}
-      ]
-    }
+  {
+    "id": 101,
+    "spot": 1,
+    "name": "Rice with peans",
+    "steps": [
+      {
+        "step": 1,
+        "action": "add",
+        "ingredients": [
+          { "category": "general", "volume": 10, "unit": "g", "name": "butter" }
+        ],
+        "temperature": 0,
+        "speed": 0,
+        "duration": 0,
+        "pot": "saucepan"
+      },
+      {
+        "step": 2,
+        "action": "melt",
+        "ingredients": [],
+        "temperature": 40,
+        "speed": 1,
+        "duration": 30
+      },
+      {
+        "step": 3,
+        "action": "add",
+        "ingredients": [
+          {
+            "category": "general",
+            "volume": 50,
+            "unit": "g",
+            "name": "rice"
+          },
+          {
+            "category": "liquid",
+            "volume": 50,
+            "unit": "ml",
+            "name": "water"
+          },
+          {
+            "category": "liquid",
+            "volume": 80,
+            "unit": "ml",
+            "name": "chicken stock"
+          }
+        ],
+        "temperature": 0,
+        "speed": 0,
+        "duration": 0
+      },
+      {
+        "step": 4,
+        "action": "boil",
+        "ingredients": [],
+        "temperature": 80,
+        "speed": 0,
+        "duration": 300
+      },
+      {
+        "step": 5,
+        "action": "add",
+        "ingredients": [
+          {
+            "category": "general",
+            "volume": 11,
+            "unit": "g",
+            "name": "carrot"
+          },
+          { "category": "general", "volume": 10, "unit": "g", "name": "peans" },
+          { "category": "spice", "volume": 0.3, "unit": "g", "name": "salt" }
+        ],
+        "temperature": 0,
+        "speed": 0,
+        "duration": 0
+      },
+      {
+        "step": 6,
+        "action": "stir",
+        "ingredients": [],
+        "temperature": 40,
+        "speed": 0,
+        "duration": 30
+      },
+      {
+        "step": 7,
+        "action": "cook",
+        "ingredients": [],
+        "temperature": 80,
+        "speed": 1,
+        "duration": 160
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "spot": 1,
+    "name": "Rice with peans",
+    "steps": [
+      {
+        "step": 1,
+        "action": "add",
+        "ingredients": [
+          { "category": "general", "volume": 10, "unit": "g", "name": "butter" }
+        ],
+        "temperature": 0,
+        "speed": 0,
+        "duration": 0,
+        "pot": "saucepan"
+      },
+      {
+        "step": 2,
+        "action": "melt",
+        "ingredients": [],
+        "temperature": 40,
+        "speed": 1,
+        "duration": 30
+      }
+    ]
+  }
 ]
