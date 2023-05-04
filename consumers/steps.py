@@ -4,7 +4,6 @@ import paho.mqtt.client as mqtt
 # The callback function of connection
 def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {rc}")
-    print(userdata)
     client.subscribe("In/Cooking_Station/+")
 
 

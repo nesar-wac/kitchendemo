@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+from time import sleep
 
 
 # The callback function of connection
@@ -10,6 +11,7 @@ def on_connect(client, userdata, flags, rc):
 # The callback function for received message
 def on_message(client, userdata, msg):
     print(msg.topic + " " + msg.payload.decode("utf-8"))
+    client.publish("Out/Kitchen_1/Spice_Dispenser_X", "success", 2)
 
 
 # create client instance
