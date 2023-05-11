@@ -4,5 +4,6 @@ from app import views
 
 urlpatterns = [
     path("", views.index, name="home"),
-    path("run/", views.run_recipe, name="run_recipe"),
+    path("recipes/one/", views.get_one_recipe),
+    path("recipes/all/", views.get_all_recipes),
 ]

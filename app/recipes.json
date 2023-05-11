@@ -1,7 +1,7 @@
 [
   {
     "id": 101,
-    "spot": 1,
+    "spot": "WAC986",
     "name": "Rice with peans",
     "steps": [
       {
@@ -21,7 +21,7 @@
         "ingredients": [],
         "temperature": 40,
         "speed": 1,
-        "duration": 30
+        "duration": 5
       },
       {
         "step": 3,
@@ -56,7 +56,7 @@
         "ingredients": [],
         "temperature": 80,
         "speed": 0,
-        "duration": 300
+        "duration": 30
       },
       {
         "step": 5,
@@ -81,7 +81,7 @@
         "ingredients": [],
         "temperature": 40,
         "speed": 0,
-        "duration": 30
+        "duration": 5
       },
       {
         "step": 7,
@@ -89,13 +89,13 @@
         "ingredients": [],
         "temperature": 80,
         "speed": 1,
-        "duration": 160
+        "duration": 40
       }
     ]
   },
   {
     "id": 102,
-    "spot": 1,
+    "spot": "WAC990",
     "name": "Rice with peans",
     "steps": [
       {
@@ -115,6 +115,41 @@
         "ingredients": [],
         "temperature": 40,
         "speed": 1,
+        "duration": 5
+      },
+      {
+        "step": 3,
+        "action": "add",
+        "ingredients": [
+          {
+            "category": "general",
+            "volume": 50,
+            "unit": "g",
+            "name": "rice"
+          },
+          {
+            "category": "liquid",
+            "volume": 50,
+            "unit": "ml",
+            "name": "water"
+          },
+          {
+            "category": "liquid",
+            "volume": 80,
+            "unit": "ml",
+            "name": "chicken stock"
+          }
+        ],
+        "temperature": 0,
+        "speed": 0,
+        "duration": 0
+      },
+      {
+        "step": 4,
+        "action": "boil",
+        "ingredients": [],
+        "temperature": 80,
+        "speed": 0,
         "duration": 30
       }
     ]

@@ -3,25 +3,25 @@ from time import sleep
 import paho.mqtt.client as mqtt
 
 
-# The callback function of connection
 def on_connect(client, userdata, flags, return_code):
     if return_code != 0:
         print(f"Could not connect with broker {return_code}")
     print(f"Connected successfully with broker")
-    client.subscribe("In/Kitchen_1/Spice_Dispenser_X")
+    client.subscribe("Kitchen_1/In/Cooking_Station/WAC986", 2)
 
 
-# The callback function for received message
 def on_message(client, userdata, msg):
-    input_data = json.loads(msg.payload.decode("utf-8"))
-    print(input_data)
-    sid = input_data["Spot_Id"]
-    output_data = json.dumps({"Spot_Id": sid, "Status": "success"})
-    sleep(10)
-    client.publish("Out/Kitchen_1/Spice_Dispenser_X", output_data, 2)
+    # convert binary data to python dictionary
+    data = json.loads(msg.payload.decode("utf-8"))
+    print(data)
+    res_data = json.dumps({"Spot_Id": data["Spot_Id"], "Status": "success"})
+    sleep(data["Duration"])  # put on sleep mode
+    # return spot number and status of the process
+    topic = f"Kitchen_1/Out/Cooking_Station/WAC986"
+    client.publish(topic=topic, payload=res_data, qos=2)
 
 
-client = mqtt.Client("IngredientsProcess", clean_session=False)
+client = mqtt.Client("SpotOneAction", clean_session=False)
 
 # Specify callback functions
 client.on_connect = on_connect

@@ -47,13 +47,13 @@
                         {% endfor %}
                     </ul>
                     <p class="flex justify-end gap-3">
-                        <button id="getRecipe"  data-rid={{recipe.id}} class="bg-orange-400 hover:bg-orange-500 rounded px-5 py-1.5"> Run </button>
+                        <button id="getOneRecipe"  data-rid={{recipe.id}} class="bg-orange-400 hover:bg-orange-500 rounded px-5 py-1.5"> Run </button>
                     </p>
                 </div>
             {% endfor %}
         </div>
         <div class="flex flex-col bg-white px-10 py-5">
-            <button class="bg-gray-200 hover:bg-gray-300 py-1.5"> Run Together </button>
+            <button id="getAllRecipes" class="bg-gray-200 hover:bg-gray-300 py-1.5"> Run Together </button>
         </div>
     </main>
     <footer class="bg-gray-100 py-10 text-center">
