@@ -17,6 +17,7 @@ def on_message(client, userdata, msg):
     print(input_data)
     sid = input_data["Spot_Id"]
     output_data = json.dumps({"Spot_Id": sid, "Status": "success"})
+    client.publish("Kitchen_1/In/Robot_Status", "busy", 2)
     sleep(10)
     client.publish("Out/Kitchen_1/Spice_Dispenser_X", output_data, 2)
 

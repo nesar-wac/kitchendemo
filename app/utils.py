@@ -6,6 +6,7 @@ from paho.mqtt import client as mqtt
 
 res_spot_id = 0
 res_status = ""
+robot_status = "idle"
 
 
 def on_connect(client, userdata, flags, return_code):
@@ -29,6 +30,11 @@ def on_cooking_message(client, userdata, msg):
     res_status = data["Status"]
 
 
+def on_robot_message(client, userdata, msg):
+    global robot_status
+    robot_status = msg.payload.decode("utf-8")
+
+
 client = mqtt.Client("RecipesProcess", clean_session=False)
 
 client.on_connect = on_connect
@@ -40,15 +46,18 @@ client.loop_start()
 
 client.message_callback_add("Out/Kitchen_1/Spice_Dispenser_X", on_ingredients_message)
 client.message_callback_add(f"Kitchen_1/Out/Cooking_Station/+", on_cooking_message)
+client.message_callback_add("Kitchen_1/In/Robot_Status", on_robot_message)
 
 
 def process_recipe(recipe):
     spot_number = recipe["spot"]
     for step in recipe["steps"]:
-        global res_spot_id, res_status
+        global res_spot_id, res_status, robot_status
         print(step)
         if not step["ingredients"] == []:
             for ingredient in step["ingredients"]:
+                while robot_status == "busy":
+                    sleep(1)
                 data = json.dumps({
                     "Spot_Id": recipe["spot"],
                     "Volume": ingredient["volume"],
@@ -64,6 +73,7 @@ def process_recipe(recipe):
                     while res_spot_id != spot_number and res_status != "success":
                         sleep(1)
                     print("Spot", spot_number, "end sleep time from spice", datetime.datetime.now())
+                    robot_status = "idle"
                     res_spot_id, res_status = 0, ""
                 elif ingredient["category"] == "liquid":
                     client.publish("In/Kitchen_1/Spice_Dispenser_X", data, 2)
@@ -72,6 +82,7 @@ def process_recipe(recipe):
                     while res_spot_id != spot_number and res_status != "success":
                         sleep(1)
                     print("Spot", spot_number, "end sleep time from liquid", datetime.datetime.now())
+                    robot_status = "idle"
                     res_spot_id, res_status = 0, ""
                 else:
                     client.publish("In/Kitchen_1/Spice_Dispenser_X", data, 2)
@@ -80,6 +91,7 @@ def process_recipe(recipe):
                     while res_spot_id != spot_number and res_status != "success":
                         sleep(1)
                     print("Spot", spot_number, "end sleep time from general", datetime.datetime.now())
+                    robot_status = "idle"
                     res_spot_id, res_status = 0, ""
         else:
             target_data = json.dumps({
