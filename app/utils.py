@@ -1,7 +1,7 @@
 import json
 import datetime
 from time import sleep
-from multiprocessing import Process
+from threading import Thread
 from paho.mqtt import client as mqtt
 
 res_spot_id = 0
@@ -100,14 +100,14 @@ def process_recipe(recipe):
 
 
 def run_recipes(recipes):
-    processes = [
-        Process(target=process_recipe, args=(recipe,)) for recipe in recipes
+    threads = [
+        Thread(target=process_recipe, args=(recipe,)) for recipe in recipes
     ]
 
-    # start created processes
-    for process in processes:
-        process.start()
+    # start created threads
+    for thread in threads:
+        thread.start()
 
-    # wait for running processes
-    for process in processes:
-        process.join()
+    # wait for running threads
+    for thread in threads:
+        thread.join()
