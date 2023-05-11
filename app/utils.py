@@ -36,12 +36,13 @@ client.on_connect = on_connect
 client.username_pw_set(username="admin", password="Shakes2018")
 client.connect("188.80.94.190", 1883)
 
+client.loop_start()
+
 client.message_callback_add("Out/Kitchen_1/Spice_Dispenser_X", on_ingredients_message)
 client.message_callback_add(f"Kitchen_1/Out/Cooking_Station/+", on_cooking_message)
 
 
 def process_recipe(recipe):
-    client.loop_start()
     spot_number = recipe["spot"]
     for step in recipe["steps"]:
         global res_spot_id, res_status
@@ -96,7 +97,6 @@ def process_recipe(recipe):
                 sleep(1)
             print("Spot", spot_number, "end sleep time from action.", datetime.datetime.now())
             res_spot_id, res_status = 0, ""
-    client.loop_stop()
 
 
 def run_recipes(recipes):
