@@ -8,23 +8,21 @@ def on_connect(client, userdata, flags, return_code):
     if return_code != 0:
         print(f"Could not connect with broker {return_code}")
     print(f"Connected successfully with broker")
-    client.subscribe("Kitchen_1/In/Cooking_Station/WAC986", 2)
+    client.subscribe("Kitchen_1/In/Normal_Dispenser")
 
 
 # when data is published, on_message is called by default
 def on_message(client, userdata, msg):
-    # convert binary data to python dictionary
-    data = json.loads(msg.payload.decode("utf-8"))
-    print(data)
-    res_data = json.dumps({"Req_Id": data["Req_Id"], "Status": "success"})
-    sleep(data["Duration"])  # put on sleep mode
-    # return spot number and status of the process
-    topic = f"Kitchen_1/Out/Cooking_Station/WAC986"
-    client.publish(topic=topic, payload=res_data, qos=2)
+    input_data = json.loads(msg.payload.decode("utf-8"))
+    print(input_data)
+    rid = input_data["Req_Id"]
+    output_data = json.dumps({"Req_Id": rid, "Status": "success"})
+    sleep(15)
+    client.publish("Kitchen_1/Out/Normal_Dispenser", output_data, 2)
 
 
 # create a new client instance with name and clean session
-client = mqtt.Client("SpotOneAction", clean_session=False)
+client = mqtt.Client("NormalDispenser", clean_session=False)
 
 # specify callback functions
 client.on_connect = on_connect
