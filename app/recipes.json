@@ -1,7 +1,7 @@
 [
   {
     "id": 101,
-    "spot": "WAC986",
+    "spot": "1",
     "name": "Rice with peans",
     "steps": [
       {
@@ -95,7 +95,7 @@
   },
   {
     "id": 102,
-    "spot": "WAC990",
+    "spot": "2",
     "name": "Rice with peans",
     "steps": [
       {

@@ -100,8 +100,9 @@ def process_recipe(recipe):
                     client.publish("Kitchen_1/In/Spice_Dispenser", data, 2)
                     print("Spot", spot_number, "start sleep time from spice", datetime.datetime.now())
                     # wait for response until status is not success
-                    while ing_req_id != req_id and ing_status != "success":
+                    while ing_req_id != req_id:
                         sleep(1)
+                    # do something for return status
                     print("Spot", spot_number, "end sleep time from spice", datetime.datetime.now())
                     robot_status = "idle"
                     ing_req_id, ing_status = "", ""
@@ -110,8 +111,9 @@ def process_recipe(recipe):
                     client.publish("Kitchen_1/In/Liquid_Dispenser", data, 2)
                     print("Spot", spot_number, "start sleep time from liquid", datetime.datetime.now())
                     # wait for response until status is not success
-                    while ing_req_id != req_id and ing_status != "success":
+                    while ing_req_id != req_id:
                         sleep(1)
+                    # do something for return status
                     print("Spot", spot_number, "end sleep time from liquid", datetime.datetime.now())
                     robot_status = "idle"
                     ing_req_id, ing_status = "", ""
@@ -120,8 +122,9 @@ def process_recipe(recipe):
                     client.publish("Kitchen_1/In/Normal_Dispenser", data, 2)
                     print("Spot", spot_number, "start sleep time from general", datetime.datetime.now())
                     # wait for response until status is not success
-                    while ing_req_id != req_id and ing_status != "success":
+                    while ing_req_id != req_id:
                         sleep(1)
+                    # do something for return status
                     print("Spot", spot_number, "end sleep time from general", datetime.datetime.now())
                     robot_status = "idle"
                     ing_req_id, ing_status = "", ""
@@ -141,8 +144,9 @@ def process_recipe(recipe):
             print("Spot", spot_number, "start sleep time from action.", datetime.datetime.now())
             # waiting for response until status is not success
             # and res spot id is not equal to the spot number
-            while spot_req_id != req_id and spot_status != "success":
+            while spot_req_id != req_id:
                 sleep(1)
+            # do something for return status
             print("Spot", spot_number, "end sleep time from action.", datetime.datetime.now())
             spot_req_id, spot_status = "", ""
 

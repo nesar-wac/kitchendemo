@@ -17,7 +17,7 @@ def on_message(client, userdata, msg):
     print(input_data)
     rid = input_data["Req_Id"]
     output_data = json.dumps({"Req_Id": rid, "Status": "success"})
-    sleep(5)
+    sleep(10)
     client.publish("Kitchen_1/Out/Liquid_Dispenser", output_data, 2)
 
 
