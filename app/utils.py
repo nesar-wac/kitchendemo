@@ -98,6 +98,7 @@ def process_recipe(recipe):
                 if ingredient["category"] == "spice":
                     robot_status = "busy"
                     client.publish("Kitchen_1/In/Spice_Dispenser", data, 2)
+                    # client.publish("", 2)
                     print("Spot", spot_number, "start sleep time from spice", datetime.datetime.now())
                     # wait for response until status is not success
                     while ing_req_id != req_id:
@@ -149,6 +150,8 @@ def process_recipe(recipe):
             # do something for return status
             print("Spot", spot_number, "end sleep time from action.", datetime.datetime.now())
             spot_req_id, spot_status = "", ""
+
+    # write code for packaging
 
 
 def run_recipes(recipes):

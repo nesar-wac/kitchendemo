@@ -1,7 +1,7 @@
 [
   {
     "id": 101,
-    "spot": "1",
+    "spot": "01",
     "name": "Rice with peans",
     "steps": [
       {
@@ -95,7 +95,7 @@
   },
   {
     "id": 102,
-    "spot": "2",
+    "spot": "02",
     "name": "Rice with peans",
     "steps": [
       {
