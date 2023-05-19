@@ -2,6 +2,49 @@
   {
     "id": 101,
     "spot": "01",
+    "name": "Caldo de arroz",
+    "steps": [
+      {
+        "step": 1,
+        "action": "add",
+        "ingredients": [
+          { "category": "liquid", "volume": 300, "unit": "ml", "name": "water" }
+        ],
+        "temperature": 0,
+        "speed": 0,
+        "duration": 0
+      },
+      {
+        "step": 2,
+        "action": "boil",
+        "ingredients": [],
+        "temperature": 120,
+        "speed": 1,
+        "duration": 600
+      },
+      {
+        "step": 3,
+        "action": "add",
+        "ingredients": [
+          { "category": "normal", "volume": 50, "unit": "g", "name": "rice" }
+        ],
+        "temperature": 0,
+        "speed": 0,
+        "duration": 0
+      },
+      {
+        "step": 4,
+        "action": "cook",
+        "ingredients": [],
+        "temperature": 80,
+        "speed": 0,
+        "duration": 500
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "spot": "02",
     "name": "Rice with peans",
     "steps": [
       {
@@ -12,8 +55,7 @@
         ],
         "temperature": 0,
         "speed": 0,
-        "duration": 0,
-        "pot": "saucepan"
+        "duration": 0
       },
       {
         "step": 2,
@@ -90,67 +132,6 @@
         "temperature": 80,
         "speed": 1,
         "duration": 40
-      }
-    ]
-  },
-  {
-    "id": 102,
-    "spot": "02",
-    "name": "Rice with peans",
-    "steps": [
-      {
-        "step": 1,
-        "action": "add",
-        "ingredients": [
-          { "category": "general", "volume": 10, "unit": "g", "name": "butter" }
-        ],
-        "temperature": 0,
-        "speed": 0,
-        "duration": 0,
-        "pot": "saucepan"
-      },
-      {
-        "step": 2,
-        "action": "melt",
-        "ingredients": [],
-        "temperature": 40,
-        "speed": 1,
-        "duration": 5
-      },
-      {
-        "step": 3,
-        "action": "add",
-        "ingredients": [
-          {
-            "category": "general",
-            "volume": 50,
-            "unit": "g",
-            "name": "rice"
-          },
-          {
-            "category": "liquid",
-            "volume": 50,
-            "unit": "ml",
-            "name": "water"
-          },
-          {
-            "category": "liquid",
-            "volume": 80,
-            "unit": "ml",
-            "name": "chicken stock"
-          }
-        ],
-        "temperature": 0,
-        "speed": 0,
-        "duration": 0
-      },
-      {
-        "step": 4,
-        "action": "boil",
-        "ingredients": [],
-        "temperature": 80,
-        "speed": 0,
-        "duration": 30
       }
     ]
   }
