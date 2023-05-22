@@ -1,6 +1,11 @@
 import json
+import secrets
 from time import sleep
 import paho.mqtt.client as mqtt
+
+
+# generate hex number for client id
+client_id = secrets.token_hex(10)
 
 
 # when connection is established, on_connect is called
@@ -24,7 +29,7 @@ def on_message(client, userdata, msg):
 
 
 # create a new client instance with name and clean session
-client = mqtt.Client("SpotTwoAction", clean_session=False)
+client = mqtt.Client(client_id, clean_session=False)
 
 # specify callback functions
 client.on_connect = on_connect

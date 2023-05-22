@@ -8,7 +8,13 @@
         "step": 1,
         "action": "add",
         "ingredients": [
-          { "category": "liquid", "volume": 300, "unit": "ml", "name": "water" }
+          {
+            "category": "liquid",
+            "dispenser": "01",
+            "volume": 300,
+            "unit": "ml",
+            "name": "water"
+          }
         ],
         "temperature": 0,
         "speed": 0,
@@ -20,13 +26,19 @@
         "ingredients": [],
         "temperature": 120,
         "speed": 1,
-        "duration": 600
+        "duration": 90
       },
       {
         "step": 3,
         "action": "add",
         "ingredients": [
-          { "category": "normal", "volume": 50, "unit": "g", "name": "rice" }
+          {
+            "category": "normal",
+            "dispenser": "02",
+            "volume": 50,
+            "unit": "g",
+            "name": "rice"
+          }
         ],
         "temperature": 0,
         "speed": 0,
@@ -38,7 +50,7 @@
         "ingredients": [],
         "temperature": 80,
         "speed": 0,
-        "duration": 500
+        "duration": 120
       }
     ]
   },
@@ -51,7 +63,13 @@
         "step": 1,
         "action": "add",
         "ingredients": [
-          { "category": "general", "volume": 10, "unit": "g", "name": "butter" }
+          {
+            "category": "general",
+            "dispenser": "03",
+            "volume": 10,
+            "unit": "g",
+            "name": "butter"
+          }
         ],
         "temperature": 0,
         "speed": 0,
@@ -71,18 +89,21 @@
         "ingredients": [
           {
             "category": "general",
+            "dispenser": "02",
             "volume": 50,
             "unit": "g",
             "name": "rice"
           },
           {
             "category": "liquid",
+            "dispenser": "01",
             "volume": 50,
             "unit": "ml",
             "name": "water"
           },
           {
             "category": "liquid",
+            "dispenser": "04",
             "volume": 80,
             "unit": "ml",
             "name": "chicken stock"
@@ -106,12 +127,25 @@
         "ingredients": [
           {
             "category": "general",
+            "dispenser": "05",
             "volume": 11,
             "unit": "g",
             "name": "carrot"
           },
-          { "category": "general", "volume": 10, "unit": "g", "name": "peans" },
-          { "category": "spice", "volume": 0.3, "unit": "g", "name": "salt" }
+          {
+            "category": "general",
+            "dispenser": "06",
+            "volume": 10,
+            "unit": "g",
+            "name": "peans"
+          },
+          {
+            "category": "spice",
+            "dispenser": "07",
+            "volume": 0.3,
+            "unit": "g",
+            "name": "salt"
+          }
         ],
         "temperature": 0,
         "speed": 0,
