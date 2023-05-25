@@ -1,0 +1,2 @@
+if we use multiprocessing for orders have to use Queue for robot status.
+alternative way to check robot status from robot kitchen
