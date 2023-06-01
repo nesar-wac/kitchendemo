@@ -26,10 +26,15 @@
                             <li>
                                 Step-{{step.step}}: {{step.action}}
                                 {% for ingredient in step.ingredients %}
-                                    <span>
                                         {{ingredient.volume}}{{ingredient.unit}}
                                         {{ingredient.name}}
-                                    </span>
+                                        {% if step.ingredients|length > 1 %}
+                                            {% if forloop.first %}
+                                                <span> and </span>
+                                            {% else %}
+                                                <span></span>
+                                            {%endif%}
+                                        {% endif %}
                                 {% endfor %}
                                 {% if step.pot %}
                                     on {{step.pot}}
@@ -41,7 +46,7 @@
                                     with speed level {{step.speed}}
                                 {% endif %}
                                 {% if step.duration %}
-                                    for {{step.duration}} seconds.
+                                    for {{step.duration}} seconds
                                 {% endif %}
                             </li>
                         {% endfor %}

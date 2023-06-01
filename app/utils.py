@@ -25,11 +25,11 @@ def on_connect(client, userdata, flags, return_code):
     if return_code != 0:
         print(f"Could not connect with broker {return_code}")
 
-    client.subscribe("Kitchen_1/Out/Robot", 2)
-    client.subscribe("Kitchen_1/Out/Liquid_Dispenser/+", 2)
-    client.subscribe("Kitchen_1/Out/Spice_Dispenser/+", 2)
-    client.subscribe("Kitchen_1/Out/Normal_Dispenser/+", 2)
-    client.subscribe("Kitchen_1/Out/Cooking_Station/+", 2)
+    client.subscribe("Out/Robot", 2)
+    client.subscribe("Out/Spice", 2)
+    client.subscribe("Out/Add_Ons", 2)
+    client.subscribe("Out/Solid_Dispensers", 2)
+    client.subscribe("Out/Cooking_Station/+", 2)
 
 
 def on_liquid_msg(client, userdata, msg):
@@ -76,11 +76,11 @@ client.connect("188.80.94.190", 1883)
 
 client.loop_start()
 
-client.message_callback_add("Kitchen_1/Out/Robot", on_robot_message)
-client.message_callback_add("Kitchen_1/Out/Liquid_Dispenser/+", on_liquid_msg)
-client.message_callback_add("Kitchen_1/Out/Spice_Dispenser/+", on_spice_msg)
-client.message_callback_add("Kitchen_1/Out/Normal_Dispenser/+", on_normal_msg)
-client.message_callback_add("Kitchen_1/Out/Cooking_Station/+", on_spot_message)
+client.message_callback_add("Out/Robot", on_robot_message)
+client.message_callback_add("Out/Spice", on_spice_msg)
+client.message_callback_add("Out/Add_Ons", on_liquid_msg)
+client.message_callback_add("Out/Solid_Dispensers", on_normal_msg)
+client.message_callback_add("Out/Cooking_Station/+", on_spot_message)
 
 
 def process_recipe(recipe):
@@ -91,211 +91,191 @@ def process_recipe(recipe):
         print(step)
         # check, does a step contain ingredient
         if not step["ingredients"] == []:
+            global robot_status
+            global ing_res_id, ing_res_status
+            global robot_res_id, robot_res_status
+
             # iterate ingredients one by one
             for ingredient in step["ingredients"]:
-                global robot_status
-                global ing_res_id, ing_res_status
-                global robot_res_id, robot_res_status
-
                 # wait for robot availability
                 while robot_status == "busy":
                     sleep(1)
 
-                # extract dispenser id from ingredient
-                dispenser = ingredient["dispenser"]
+                # change robot state
+                robot_status = "busy"
 
-                # generate random hex for ing_req
+                # get random hex string for req id
                 ing_req_id = secrets.token_hex(5)
-
-                # restructure ing data
-                ing_dict = json.dumps({
+                # get dispenser id from ingredient
+                dispenser = ingredient["dispenser"]
+                ingredient_msg = json.dumps({
                     "Req_Id": ing_req_id,
                     "Dispenser": dispenser,
-                    "Time": ingredient["volume"],
+                    "Grams": ingredient["volume"],
                 })
 
-                # check ingredient category and send
-                # data to the dispenser based on it.
+                # first pickup the solid ingredient cup
+                # get random hex string for request id
+                robot_req_id = secrets.token_hex(5)
+                pickup_cup_msg = json.dumps({
+                    "Req_Id": robot_req_id,
+                    "Id_Number": ingredient["pickup_cup"]["program_id"],
+                    "AxisX": ingredient["pickup_cup"]["axis_x"],
+                    "SpeedX": ingredient["pickup_cup"]["speed_x"],
+                    "AxisY": ingredient["pickup_cup"]["axis_y"],
+                    "SpeedY": ingredient["pickup_cup"]["speed_y"],
+                    "ControlParam": ingredient["pickup_cup"]["control_param"],
+                })
+
+                # send data to the robot to pick up a solid cup
+                client.publish("In/Robot", pickup_cup_msg, 2)
+                print(spot_number, "start cup pickup", datetime.datetime.now())
+
+                # waiting for the mqtt response until
+                # robot_req_id is equal to robot_res_id
+                while robot_res_id != robot_req_id:
+                    sleep(1)
+                print(spot_number, "end cup pickup", datetime.datetime.now())
+
+                # if success, reset robot's id and status
+                if robot_res_status == "success":
+                    robot_res_id = ""
+                    robot_res_status = ""
+
+                # second drive picked up cup to dispenser
+                # get random hex string for request id
+                robot_req_id = secrets.token_hex(5)
+                drive_to_dispenser_msg = json.dumps({
+                    "Req_Id": robot_req_id,
+                    "Id_Number": ingredient["drive_to_disp"]["program_id"],
+                    "AxisX": ingredient["drive_to_disp"]["axis_x"],
+                    "SpeedX": ingredient["drive_to_disp"]["speed_x"],
+                    "AxisY": ingredient["drive_to_disp"]["axis_y"],
+                    "SpeedY": ingredient["drive_to_disp"]["speed_y"],
+                    "ControlParam": ingredient["drive_to_disp"]["control_param"],
+                })
+
+                # send data to the robot to drive the cup to dispenser
+                client.publish("In/Robot", drive_to_dispenser_msg, 2)
+                print(spot_number, "start drive cup", datetime.datetime.now())
+
+                # waiting for the mqtt response until
+                # robot_req_id is equal to robot_res_id
+                while robot_res_id != robot_req_id:
+                    sleep(1)
+                print(spot_number, "end drive cup", datetime.datetime.now())
+
+                # if success, reset robot's id and status
+                if robot_res_status == "success":
+                    robot_res_id = ""
+                    robot_res_status = ""
+
+                # third dispense ingredient to the picked up cap
+                # send data to the robot to dispense ingredient to the cup
                 if ingredient["category"] == "spice":
-                    robot_status = "busy"
-
-                    # generate random hex string value
-                    robot_req_id = secrets.token_hex(5)
-                    forw_step_dict = json.dumps({
-                        "Req_Id": robot_req_id,
-                        "AxisX": 0,
-                        "SpeedX": 0,
-                        "AxisY": 0,
-                        "SpeedY": 0,
-                        "ControlParam": 2
-                    })
-                    client.publish("Kitchen_1/In/Robot", forw_step_dict, 2)
-                    print("Spot", spot_number, "start sleep time from robot forward step", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # robot_req_id is not equal to robot_res_id
-                    while robot_res_id != robot_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from robot forward step", datetime.datetime.now())
-                    if robot_res_status == "success":
-                        robot_res_id = ""
-                        robot_res_status = ""
-
-                    topic = f"Kitchen_1/In/Spice_Dispenser/{dispenser}"
-                    client.publish(topic=topic, payload=ing_dict, qos=2)
-                    print("Spot", spot_number, "start sleep time from spice", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # ing_req_id is not equal to ing_res_id
-                    while ing_res_id != ing_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from spice", datetime.datetime.now())
-                    # if ing_res_status is equal to success
-                    # reset ing id, status and robot status
-                    if ing_res_status == "success":
-                        ing_res_id = ""
-                        ing_res_status = ""
-
-                    # generate random hex robot req id
-                    robot_req_id = secrets.token_hex(5)
-                    back_step_dict = json.dumps({
-                        "Req_Id": robot_req_id,
-                        "AxisX": 0,
-                        "SpeedX": 0,
-                        "AxisY": 0,
-                        "SpeedY": 0,
-                        "ControlParam": 2
-                    })
-                    client.publish("Kitchen_1/In/Robot", back_step_dict, 2)
-                    print("Spot", spot_number, "start sleep time from robot backward step", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # robot_req_id is equal to robot_res_id
-                    while robot_res_id != robot_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from robot backward step", datetime.datetime.now())
-                    if robot_res_status == "success":
-                        robot_res_id = ""
-                        robot_res_status = ""
-
-                    robot_status = "idle"
+                    client.publish("In/Spice", ingredient_msg, 2)
                 elif ingredient["category"] == "liquid":
-                    robot_status = "busy"
-
-                    # generate random hex string value
-                    robot_req_id = secrets.token_hex(5)
-                    forw_step_dict = json.dumps({
-                        "Req_Id": robot_req_id,
-                        "AxisX": 0,
-                        "SpeedX": 0,
-                        "AxisY": 0,
-                        "SpeedY": 0,
-                        "ControlParam": 2
-                    })
-                    client.publish("Kitchen_1/In/Robot", forw_step_dict, 2)
-                    print("Spot", spot_number, "start sleep time from robot forward step", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # robot_req_id is equal to robot_res_id
-                    while robot_res_id != robot_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from robot forward step", datetime.datetime.now())
-                    if robot_res_status == "success":
-                        robot_res_id = ""
-                        robot_res_status = ""
-
-                    topic = f"Kitchen_1/In/Liquid_Dispenser/{dispenser}"
-                    client.publish(topic=topic, payload=ing_dict, qos=2)
-                    print("Spot", spot_number, "start sleep time from liquid", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # req_id is not equal to ing_res_id
-                    while ing_res_id != ing_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from liquid", datetime.datetime.now())
-                    # if ing_res_status is equal to success
-                    # reset ing id, status and robot status
-                    if ing_res_status == "success":
-                        ing_res_id = ""
-                        ing_res_status = ""
-
-                    # generate random hex robot req id
-                    robot_req_id = secrets.token_hex(5)
-                    back_step_dict = json.dumps({
-                        "Req_Id": robot_req_id,
-                        "AxisX": 0,
-                        "SpeedX": 0,
-                        "AxisY": 0,
-                        "SpeedY": 0,
-                        "ControlParam": 2
-                    })
-                    client.publish("Kitchen_1/In/Robot", back_step_dict, 2)
-                    print("Spot", spot_number, "start sleep time from robot backward step", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # robot_req_id is equal to robot_res_id
-                    while robot_res_id != robot_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from robot backward step", datetime.datetime.now())
-                    if robot_res_status == "success":
-                        robot_res_id = ""
-                        robot_res_status = ""
-
-                    robot_status = "idle"
+                    client.publish("In/Add_Ons", ingredient_msg, 2)
                 else:
-                    robot_status = "busy"
+                    client.publish("In/Solid_Dispensers", ingredient_msg, 2)
 
-                    # generate random hex for robot req id
-                    robot_req_id = secrets.token_hex(5)
-                    forw_step_dict = json.dumps({
-                        "Req_Id": robot_req_id,
-                        "AxisX": 0,
-                        "SpeedX": 0,
-                        "AxisY": 0,
-                        "SpeedY": 0,
-                        "ControlParam": 2
-                    })
-                    client.publish("Kitchen_1/In/Robot", forw_step_dict, 2)
-                    print("Spot", spot_number, "start sleep time from robot forward step", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # robot_req_id is equal to robot_res_id
-                    while robot_res_id != robot_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from robot forward step", datetime.datetime.now())
-                    if robot_res_status == "success":
-                        robot_res_id = ""
-                        robot_res_status = ""
+                print(spot_number, "start dispense ingredient", datetime.datetime.now())
 
-                    topic = f"Kitchen_1/In/Normal_Dispenser/{dispenser}"
-                    client.publish(topic=topic, payload=ing_dict, qos=2)
-                    print("Spot", spot_number, "start sleep time from general", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # ing_req_id is equal to ing_res_id
-                    while ing_res_id != ing_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from general", datetime.datetime.now())
-                    # if ing_res_status is equal to success
-                    # reset ing id, status and robot status
-                    if ing_res_status == "success":
-                        ing_res_id = ""
-                        ing_res_status = ""
+                # waiting for the mqtt response until
+                # req_id is not equal to ing_res_id
+                while ing_res_id != ing_req_id:
+                    sleep(1)
+                print(spot_number, "end dispense ingredient", datetime.datetime.now())
 
-                    # generate random hex robot req id
-                    robot_req_id = secrets.token_hex(5)
-                    back_step_dict = json.dumps({
-                        "Req_Id": robot_req_id,
-                        "AxisX": 0,
-                        "SpeedX": 0,
-                        "AxisY": 0,
-                        "SpeedY": 0,
-                        "ControlParam": 2
-                    })
-                    client.publish("Kitchen_1/In/Robot", back_step_dict, 2)
-                    print("Spot", spot_number, "start sleep time from robot backward step", datetime.datetime.now())
-                    # waiting for the mqtt response until
-                    # robot_req_id is equal to robot_res_id
-                    while robot_res_id != robot_req_id:
-                        sleep(1)
-                    print("Spot", spot_number, "end sleep time from robot backward step", datetime.datetime.now())
-                    if robot_res_status == "success":
-                        robot_res_id = ""
-                        robot_res_status = ""
+                # if success, reset ing_res id and status
+                if ing_res_status == "success":
+                    ing_res_id = ""
+                    ing_res_status = ""
 
-                    robot_status = "idle"
+                # fourth drive to home from dispenser
+                # get random hex string for request id
+                robot_req_id = secrets.token_hex(5)
+                drive_to_home_msg = json.dumps({
+                    "Req_Id": robot_req_id,
+                    "Id_Number": ingredient["drive_to_home"]["program_id"],
+                    "AxisX": ingredient["drive_to_home"]["axis_x"],
+                    "SpeedX": ingredient["drive_to_home"]["speed_x"],
+                    "AxisY": ingredient["drive_to_home"]["axis_y"],
+                    "SpeedY": ingredient["drive_to_home"]["speed_y"],
+                    "ControlParam": ingredient["drive_to_home"]["control_param"],
+                })
+
+                # send data to the robot to drive the cup to home
+                client.publish("In/Robot", drive_to_home_msg, 2)
+                print(spot_number, "start back to home", datetime.datetime.now())
+
+                # waiting for the mqtt response until
+                # robot_req_id is equal to robot_res_id
+                while robot_res_id != robot_req_id:
+                    sleep(1)
+                print(spot_number, "end back to home", datetime.datetime.now())
+
+                # if success, reset robot's id and status
+                if robot_res_status == "success":
+                    robot_res_id = ""
+                    robot_res_status = ""
+
+                # fifth drive cup and pour on spot's pot
+                # get random hex string for request id
+                robot_req_id = secrets.token_hex(5)
+                pour_ing_msg = json.dumps({
+                    "Req_Id": robot_req_id,
+                    "Id_Number": ingredient["drive_to_spot"]["program_id"],
+                    "AxisX": ingredient["drive_to_spot"]["axis_x"],
+                    "SpeedX": ingredient["drive_to_spot"]["speed_x"],
+                    "AxisY": ingredient["drive_to_spot"]["axis_y"],
+                    "SpeedY": ingredient["drive_to_spot"]["speed_y"],
+                    "ControlParam": ingredient["drive_to_spot"]["control_param"],
+                })
+
+                # send data to the robot to pour ingredient
+                client.publish("In/Robot", pour_ing_msg, 2)
+                print(spot_number, "start pouring ingredient", datetime.datetime.now())
+
+                # waiting for the mqtt response until
+                # robot_req_id is equal to robot_res_id
+                while robot_res_id != robot_req_id:
+                    sleep(1)
+                print(spot_number, "end pouring ingredient", datetime.datetime.now())
+
+                # if success, reset robot's id and status
+                if robot_res_status == "success":
+                    robot_res_id = ""
+                    robot_res_status = ""
+
+                # sixth drop out the cup in init place
+                # get random hex string for request id
+                robot_req_id = secrets.token_hex(5)
+                dropout_cup_msg = json.dumps({
+                    "Req_Id": robot_req_id,
+                    "Id_Number": ingredient["dropout_cup"]["program_id"],
+                    "AxisX": ingredient["dropout_cup"]["axis_x"],
+                    "SpeedX": ingredient["dropout_cup"]["speed_x"],
+                    "AxisY": ingredient["dropout_cup"]["axis_y"],
+                    "SpeedY": ingredient["dropout_cup"]["speed_y"],
+                    "ControlParam": ingredient["dropout_cup"]["control_param"],
+                })
+
+                # send data to the robot to drop out the cup
+                client.publish("In/Robot", dropout_cup_msg, 2)
+                print(spot_number, "start dropping cup", datetime.datetime.now())
+
+                # waiting for the mqtt response until
+                # robot_req_id is equal to robot_res_id
+                while robot_res_id != robot_req_id:
+                    sleep(1)
+                print(spot_number, "end dropping cup", datetime.datetime.now())
+
+                # if success, reset robot's id and status
+                if robot_res_status == "success":
+                    robot_res_id = ""
+                    robot_res_status = ""
+            robot_status = "idle"
         else:
             global spot_res_id, spot_res_status
             # generate random hex for spot req id
@@ -307,14 +287,14 @@ def process_recipe(recipe):
                 "Speed": step["speed"],
                 "Duration": step["duration"]
             })
-            topic = f"Kitchen_1/In/Cooking_Station/{spot_number}"
+            topic = f"In/Cooking_Station/{spot_number}"
             client.publish(topic=topic, payload=target_data, qos=2)
-            print("Spot", spot_number, "start sleep time from action.", datetime.datetime.now())
+            print(spot_number, "start from action.", datetime.datetime.now())
             # waiting for the mqtt response until
             # req_id is not equal to spot_req_id
             while spot_res_id != spot_req_id:
                 sleep(1)
-            print("Spot", spot_number, "end sleep time from action.", datetime.datetime.now())
+            print(spot_number, "end from action.", datetime.datetime.now())
             # if  response  status  is success
             # reset the spot res id and status
             if spot_res_status == "success":

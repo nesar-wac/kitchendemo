@@ -13,7 +13,7 @@ def on_connect(client, userdata, flags, return_code):
     if return_code != 0:
         print(f"Could not connect with broker {return_code}")
     print(f"Connected successfully with broker")
-    client.subscribe("Kitchen_1/In/Robot")
+    client.subscribe("In/Robot")
 
 
 # when data is published, on_message is called by default
@@ -22,9 +22,8 @@ def on_message(client, userdata, msg):
     print(data)
     rid = data["Req_Id"]
     res_data = json.dumps({"Req_Id": rid, "Status": "success"})
-    sleep(12)
-    topic = f"Kitchen_1/Out/Robot"
-    client.publish(topic=topic, payload=res_data, qos=2)
+    sleep(10)
+    client.publish("Out/Robot", res_data, 2)
 
 
 # create a new client instance with name and clean session
