@@ -172,9 +172,9 @@ def process_recipe(recipe):
 
                 # third dispense ingredient to the picked up cap
                 # send data to the robot to dispense ingredient to the cup
-                if ingredient["category"] == "spice":
+                if ingredient["cup"] == "spice":
                     client.publish("In/Spice", ingredient_msg, 2)
-                elif ingredient["category"] == "liquid":
+                elif ingredient["cup"] == "liquid":
                     client.publish("In/Add_Ons", ingredient_msg, 2)
                 else:
                     client.publish("In/Solid_Dispensers", ingredient_msg, 2)

@@ -9,7 +9,7 @@
         "action": "add",
         "ingredients": [
           {
-            "category": "liquid",
+            "cup": "liquid",
             "dispenser": "3",
             "pickup_cup": {
               "program_id": 125,
@@ -73,7 +73,7 @@
         "action": "add",
         "ingredients": [
           {
-            "category": "solid",
+            "cup": "solid",
             "dispenser": "7",
             "pickup_cup": {
               "program_id": 127,
@@ -144,7 +144,7 @@
         "action": "add",
         "ingredients": [
           {
-            "category": "liquid",
+            "cup": "liquid",
             "dispenser": "3",
             "pickup_cup": {
               "program_id": 125,
@@ -191,7 +191,7 @@
             "name": "water"
           },
           {
-            "category": "solid",
+            "cup": "solid",
             "dispenser": "7",
             "pickup_cup": {
               "program_id": 126,
@@ -255,7 +255,7 @@
         "action": "add",
         "ingredients": [
           {
-            "category": "solid",
+            "cup": "solid",
             "dispenser": "8",
             "pickup_cup": {
               "program_id": 126,
@@ -302,7 +302,7 @@
             "name": "peans"
           },
           {
-            "category": "spice",
+            "cup": "spice",
             "dispenser": "10",
             "pickup_cup": {
               "program_id": 126,
