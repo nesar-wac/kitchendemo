@@ -21,7 +21,8 @@ def on_message(client, userdata, msg):
     # convert binary data to python dictionary
     data = json.loads(msg.payload.decode("utf-8"))
     print(data)
-    res_data = json.dumps({"Req_Id": data["Req_Id"], "Status": "success"})
+    rid = data["Req_Id"]
+    res_data = f"Req_Id: {rid}, Status: success"
     sleep(data["Duration"])  # put on sleep mode
     # return spot number and status of the process
     topic = f"Out/Cooking_Station/02"

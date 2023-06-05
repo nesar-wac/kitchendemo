@@ -21,7 +21,7 @@ def on_message(client, userdata, msg):
     data = json.loads(msg.payload.decode("utf-8"))
     print(data)
     rid = data["Req_Id"]
-    res_data = json.dumps({"Req_Id": rid, "Status": "success"})
+    res_data = f"Req_Id: {rid}, Status: success"
     sleep(10)
     client.publish("Out/Spice", res_data, 2)
 

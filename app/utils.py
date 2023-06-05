@@ -21,6 +21,28 @@ spot_res_status = ""
 client_id = secrets.token_hex(10)
 
 
+def convert_str_list(message):
+    response_list = []
+    # split the message based on comma
+    split_on_comma = message.split(",")
+    for item in split_on_comma:
+        # split the item based on colon
+        split_on_colon = item.split(":")
+        for value in split_on_colon:
+            # remove whitespace from text
+            rmv_space = value.strip()
+            # add item to the response_list
+            response_list.append(rmv_space)
+    return response_list
+
+
+def convert_list_to_dict(data):
+    response_dict = {}
+    for i in range(0, len(data), 2):
+        response_dict[data[i]] = data[i + 1]
+    return response_dict
+
+
 def on_connect(client, userdata, flags, return_code):
     if return_code != 0:
         print(f"Could not connect with broker {return_code}")
@@ -34,37 +56,48 @@ def on_connect(client, userdata, flags, return_code):
 
 def on_liquid_msg(client, userdata, msg):
     global ing_res_id, ing_res_status
-    data = json.loads(msg.payload.decode("utf-8"))
-    ing_res_id = data["Req_Id"]
-    ing_res_status = data["Status"]
+    # data = json.loads(msg.payload.decode("utf-8"))
+    message = msg.payload.decode("utf-8")
+    res_list = convert_str_list(message)
+    format_data = convert_list_to_dict(res_list)
+    ing_res_id = format_data["Req_Id"]
+    ing_res_status = format_data["Status"]
 
 
 def on_spice_msg(client, userdata, msg):
     global ing_res_id, ing_res_status
-    data = json.loads(msg.payload.decode("utf-8"))
-    ing_res_id = data["Req_Id"]
-    ing_res_status = data["Status"]
+    message = msg.payload.decode("utf-8")
+    res_list = convert_str_list(message)
+    format_data = convert_list_to_dict(res_list)
+    ing_res_id = format_data["Req_Id"]
+    ing_res_status = format_data["Status"]
 
 
 def on_normal_msg(client, userdata, msg):
     global ing_res_id, ing_res_status
-    data = json.loads(msg.payload.decode("utf-8"))
-    ing_res_id = data["Req_Id"]
-    ing_res_status = data["Status"]
+    message = msg.payload.decode("utf-8")
+    res_list = convert_str_list(message)
+    format_data = convert_list_to_dict(res_list)
+    ing_res_id = format_data["Req_Id"]
+    ing_res_status = format_data["Status"]
 
 
 def on_spot_message(client, userdata, msg):
     global spot_res_id, spot_res_status
-    data = json.loads(msg.payload.decode("utf-8"))
-    spot_res_id = data["Req_Id"]
-    spot_res_status = data["Status"]
+    message = msg.payload.decode("utf-8")
+    res_list = convert_str_list(message)
+    format_data = convert_list_to_dict(res_list)
+    spot_res_id = format_data["Req_Id"]
+    spot_res_status = format_data["Status"]
 
 
 def on_robot_message(client, userdata, msg):
     global robot_res_id, robot_res_status
-    data = json.loads(msg.payload.decode("utf-8"))
-    robot_res_id = data["Req_Id"]
-    robot_res_status = data["Status"]
+    message = msg.payload.decode("utf-8")
+    res_list = convert_str_list(message)
+    format_data = convert_list_to_dict(res_list)
+    robot_res_id = format_data["Req_Id"]
+    robot_res_status = format_data["Status"]
 
 
 client = mqtt.Client(client_id, clean_session=False)
