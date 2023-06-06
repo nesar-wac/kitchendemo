@@ -22,7 +22,7 @@ def on_message(client, userdata, msg):
     data = json.loads(msg.payload.decode("utf-8"))
     print(data)
     rid = data["Req_Id"]
-    res_data = f"Req_Id: {rid}, Status: success"
+    res_data = json.dumps({"Req_Id": rid, "Status": "success"})
     sleep(data["Duration"])  # put on sleep mode
     # return spot number and status of the process
     topic = f"Out/Cooking_Station/01"

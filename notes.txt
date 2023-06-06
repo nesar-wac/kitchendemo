@@ -1,2 +1,24 @@
 if we use multiprocessing for orders have to use Queue for robot status.
 alternative way to check robot status from robot kitchen
+
+
+def convert_str_list(message):
+    response_list = []
+    # split the message based on comma
+    split_on_comma = message.split(",")
+    for item in split_on_comma:
+        # split the item based on colon
+        split_on_colon = item.split(":")
+        for value in split_on_colon:
+            # remove whitespace from text
+            rmv_space = value.strip()
+            # add item to the response_list
+            response_list.append(rmv_space)
+    return response_list
+
+
+def convert_list_to_dict(data):
+    response_dict = {}
+    for i in range(0, len(data), 2):
+        response_dict[data[i]] = data[i + 1]
+    return response_dict
